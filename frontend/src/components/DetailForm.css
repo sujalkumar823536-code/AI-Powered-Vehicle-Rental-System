@@ -1,0 +1,156 @@
+/* Booking details popup. Colours match the detail page: navy card, red accent. */
+.bf-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 6, 14, 0.72);
+  backdrop-filter: blur(6px);
+  animation: bf-fade 0.18s ease-out;
+}
+
+.bf-modal {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  padding: 28px;
+  border-radius: 24px;
+  color: #fff;
+  color-scheme: dark; /* dark scrollbar instead of the white strip */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  background: #14173a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 60px rgba(255, 45, 45, 0.12);
+  animation: bf-rise 0.22s ease-out;
+  font-family: inherit;
+}
+
+.bf-modal h2 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.bf-sub {
+  margin: 4px 0 18px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.bf-x {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+.bf-x:hover { background: rgba(255, 255, 255, 0.16); }
+
+.bf-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.bf-summary div { display: grid; gap: 2px; }
+.bf-summary span { font-size: 13px; color: rgba(255, 255, 255, 0.6); }
+.bf-summary b { font-size: 20px; color: #ff4a4a; white-space: nowrap; }
+
+.bf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 14px;
+}
+
+.bf-field { display: grid; gap: 6px; margin-bottom: 14px; }
+.bf-label { font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.85); }
+
+.bf-field input,
+.bf-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(8, 10, 28, 0.7);
+  color: #fff;
+  font: inherit;
+  resize: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.bf-field input::placeholder,
+.bf-field textarea::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+.bf-field input:focus,
+.bf-field textarea:focus {
+  outline: none;
+  border-color: #ff2d2d;
+  box-shadow: 0 0 0 3px rgba(255, 45, 45, 0.25);
+}
+
+.bf-field.bad input { border-color: #ff6b6b; }
+.bf-error { font-size: 12.5px; color: #ff8a8a; }
+
+.bf-hint { margin: 0 0 18px; font-size: 13px; color: rgba(255, 255, 255, 0.5); }
+
+/* Error from the server (for example "Vehicle not found.") */
+.bf-fail {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  color: #ff9b9b;
+  background: rgba(255, 43, 43, 0.12);
+  border: 1px solid rgba(255, 43, 43, 0.35);
+}
+
+.bf-actions { display: flex; gap: 12px; }
+.bf-actions button {
+  height: 50px;
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+.bf-ghost {
+  flex: 0 0 110px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.bf-go {
+  flex: 1;
+  color: #fff;
+  background: #ff2d2d;
+  box-shadow: 0 10px 28px rgba(255, 45, 45, 0.35);
+}
+.bf-actions button:disabled { opacity: 0.6; cursor: default; }
+.bf-actions button:focus-visible,
+.bf-x:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+@keyframes bf-fade { from { opacity: 0; } }
+@keyframes bf-rise { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+
+@media (max-width: 560px) {
+  .bf-modal { padding: 22px 18px; }
+  .bf-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-backdrop, .bf-modal { animation: none; }
+}

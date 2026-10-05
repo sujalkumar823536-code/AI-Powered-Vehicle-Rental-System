@@ -1,0 +1,225 @@
+/* My bookings: dark theme to match the rest of the site. Scoped with mb- */
+.mb-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 50% at 85% 5%, rgba(255, 43, 43, 0.2), transparent 60%),
+    radial-gradient(50% 40% at 5% 95%, rgba(60, 80, 200, 0.18), transparent 60%),
+    linear-gradient(180deg, #0b0d1a 0%, #0e0f12 100%);
+}
+
+.mb-page {
+  position: relative;
+  z-index: 1;
+  color: #f2efe9;
+  font-family: "Manrope", system-ui, sans-serif;
+  padding: 8px 56px 120px 0; /* clear of the side tab and chat button */
+}
+
+.mb-head { margin-bottom: 26px; }
+.mb-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #ff2b2b;
+}
+.mb-eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: #ff2b2b;
+  box-shadow: 0 0 10px rgba(255, 43, 43, 0.8);
+}
+.mb-head h2 {
+  margin: 10px 0 6px;
+  color: #fff;
+  font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.mb-sub { margin: 0; color: rgba(242, 239, 233, 0.65); }
+
+.mb-error {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  color: #ff9b9b;
+  background: rgba(255, 43, 43, 0.12);
+  border: 1px solid rgba(255, 43, 43, 0.35);
+}
+
+/* List + cards */
+.mb-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+
+.mb-card {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171c3a 0%, #0d0f1d 100%);
+  border: 1px solid rgba(242, 239, 233, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+  animation: mb-up 0.5s ease-out both;
+  animation-delay: calc(var(--i, 0) * 80ms);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.mb-card:hover {
+  border-color: rgba(255, 43, 43, 0.6);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5), 0 0 28px rgba(255, 43, 43, 0.2);
+}
+@keyframes mb-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.mb-photo {
+  height: 124px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #0b0d1a;
+  border: 1px solid rgba(242, 239, 233, 0.1);
+}
+.mb-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.mb-photo span { font-size: 2.4rem; font-weight: 800; color: rgba(242, 239, 233, 0.2); }
+
+.mb-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.mb-main h3 {
+  margin: 0;
+  color: #fff;
+  font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+.mb-status {
+  padding: 4px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #4be38a;
+  background: rgba(75, 227, 138, 0.12);
+}
+.mb-dates { margin: 8px 0 0; font-weight: 600; color: rgba(242, 239, 233, 0.85); }
+.mb-dates span { color: #ff2b2b; margin: 0 4px; }
+.mb-dates em {
+  margin-left: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-style: normal;
+  font-size: 0.75rem;
+  background: rgba(242, 239, 233, 0.08);
+  border: 1px solid rgba(242, 239, 233, 0.12);
+}
+
+/* Booking details (name, phone, ...) */
+.mb-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+.mb-details > div {
+  padding: 7px 12px;
+  border-radius: 12px;
+  background: rgba(242, 239, 233, 0.06);
+  border: 1px solid rgba(242, 239, 233, 0.1);
+}
+.mb-details > div.wide { flex: 1 1 100%; }
+.mb-details dt {
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(242, 239, 233, 0.5);
+}
+.mb-details dd { margin: 2px 0 0; font-size: 0.9rem; font-weight: 600; color: #fff; overflow-wrap: anywhere; }
+
+.mb-side { display: grid; gap: 12px; justify-items: end; text-align: right; }
+.mb-total span {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(242, 239, 233, 0.55);
+}
+.mb-total strong { font-size: 1.7rem; font-weight: 800; color: #fff; }
+
+.mb-cancel {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  color: #ff9b9b;
+  background: transparent;
+  border: 1px solid rgba(255, 43, 43, 0.5);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.mb-cancel:hover { background: #ff2b2b; color: #fff; }
+
+/* Empty state + button */
+.mb-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 60px 20px;
+  text-align: center;
+  border: 1px dashed rgba(242, 239, 233, 0.2);
+  border-radius: 22px;
+}
+.mb-empty p { margin: 0; font-size: 1.05rem; color: rgba(242, 239, 233, 0.8); }
+.mb-empty-ring {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 3px solid #ff2b2b;
+  box-shadow: 0 0 20px rgba(255, 43, 43, 0.5);
+}
+.mb-btn {
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: #ff2b2b;
+  box-shadow: 0 6px 22px rgba(255, 43, 43, 0.4);
+  transition: transform 0.15s ease;
+}
+.mb-btn:hover { transform: translateY(-1px); }
+
+/* Loading */
+.mb-skel {
+  height: 156px;
+  border-radius: 22px;
+  border: 1px solid rgba(242, 239, 233, 0.08);
+  background: linear-gradient(100deg, rgba(242, 239, 233, 0.05) 30%, rgba(242, 239, 233, 0.12) 50%, rgba(242, 239, 233, 0.05) 70%);
+  background-size: 200% 100%;
+  animation: mb-shimmer 1.3s linear infinite;
+}
+@keyframes mb-shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+.mb-cancel:focus-visible,
+.mb-btn:focus-visible { outline: 2px solid #ff2b2b; outline-offset: 2px; }
+
+@media (max-width: 800px) {
+  .mb-card { grid-template-columns: 1fr; }
+  .mb-photo { height: 180px; }
+  .mb-side { grid-template-columns: 1fr auto; align-items: center; justify-items: stretch; text-align: left; }
+  .mb-cancel { justify-self: end; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mb-card, .mb-skel { animation: none; }
+}

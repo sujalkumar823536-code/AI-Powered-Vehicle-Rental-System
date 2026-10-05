@@ -1,0 +1,417 @@
+/* ===== One page: no scrolling while the Vehicles page is open ===== */
+body:has(.vh-page) { overflow: hidden; }
+
+/* ===== Page ===== */
+.vh-page {
+  --nav-h: 0px; /* height of a top navbar on this page (the navbar only shows on Home, so 0). Change it if the page still scrolls or leaves a gap */
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  height: calc(100dvh - var(--nav-h));
+  color: #f2efe9;
+  padding: 8px 64px 12px 8px; /* right padding keeps content clear of the side tab */
+  font-family: "Manrope", system-ui, sans-serif;
+}
+.vh-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(60% 50% at 85% 5%, rgba(255, 43, 43, 0.2), transparent 60%),
+    radial-gradient(50% 40% at 5% 95%, rgba(60, 80, 200, 0.18), transparent 60%),
+    linear-gradient(180deg, #0b0d1a 0%, #0e0f12 100%);
+}
+
+.vh-head { flex: none; }
+.vh-head h2 {
+  margin: 0;
+  color: #fff;
+  font-family: "Bricolage Grotesque", "Manrope", sans-serif;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  letter-spacing: -0.02em;
+}
+.vh-sub {
+  margin: 6px 0 0;
+  color: rgba(242, 239, 233, 0.65);
+}
+
+/* ===== Filter chips + arrows ===== */
+.vh-bar {
+  position: relative;
+  z-index: 1; /* below the zoomed card (z-index 5) so the card covers the chips */
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 22px;
+}
+.vh-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.vh-chip {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 9px 18px;
+  border-radius: 999px;
+  color: #f2efe9;
+  background: rgba(242, 239, 233, 0.06);
+  border: 1px solid rgba(242, 239, 233, 0.18);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+.vh-chip:hover { background: rgba(242, 239, 233, 0.12); transform: translateY(-1px); }
+.vh-chip.active {
+  background: #ff2b2b;
+  border-color: #ff2b2b;
+  box-shadow: 0 6px 20px rgba(255, 43, 43, 0.45);
+}
+
+.vh-nav { display: flex; gap: 10px; }
+.vh-arrow {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #f2efe9;
+  background: rgba(242, 239, 233, 0.06);
+  border: 1px solid rgba(242, 239, 233, 0.2);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.vh-arrow svg { width: 18px; height: 18px; }
+.vh-arrow:hover {
+  background: #ff2b2b;
+  border-color: #ff2b2b;
+  box-shadow: 0 6px 20px rgba(255, 43, 43, 0.45);
+}
+
+/* ===== Sliding row (fills the space left under the chips) ===== */
+.vh-track {
+  --w: min(310px, 78vw);       /* normal card width */
+  --grow: calc(var(--w) / 2);  /* how far each side grows on hover */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 170px;
+  /* extra padding gives the zoomed card room; negative margin cancels it visually */
+  padding: 200px 170px 150px;
+  margin: -172px -164px -110px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  pointer-events: none; /* empty padding must not block the chips above */
+}
+.vh-track::-webkit-scrollbar { display: none; }
+
+.vh-item {
+  flex: 0 0 var(--w);
+  position: relative;
+  pointer-events: auto;
+  scroll-snap-align: start;
+  animation: vh-in 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) backwards; /* backwards, not both */
+  animation-delay: calc(var(--i, 0) * 90ms);
+  transition: flex-basis 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              margin 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+              transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes vh-in {
+  from { opacity: 0; transform: translateY(34px) scale(0.95); }
+  to   { opacity: 1; transform: none; }
+}
+
+.vh-msg { margin: 28px 0; color: rgba(242, 239, 233, 0.7); pointer-events: auto; }
+.vh-error { color: #ff7b7b; }
+
+/* ===== Card ===== */
+.vc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 18px;
+  overflow: hidden;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #171c3a 0%, #0d0f1d 100%);
+  border: 1px solid rgba(242, 239, 233, 0.12);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.18s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
+}
+.vc-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(255, 43, 43, 0.24), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
+.vc-card:hover {
+  border-color: rgba(255, 43, 43, 0.7);
+  box-shadow: 0 22px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 43, 43, 0.25);
+}
+.vc-card:hover::before { opacity: 1; }
+
+.vc-top {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+.vc-type {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #ff2b2b;
+}
+.vc-name {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  color: #fff;
+  transition: font-size 0.3s ease;
+}
+.vc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 5px 11px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.vc-tag::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.vc-tag.ok  { color: #4be38a; background: rgba(75, 227, 138, 0.12); }
+.vc-tag.off { color: #ff7b7b; background: rgba(255, 123, 123, 0.12); }
+
+/* Vehicle picture area: takes all the height left in the card */
+.vc-art {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 14px -4px 10px;
+}
+.vc-art svg { display: block; width: 100%; height: auto; overflow: visible; }
+.vc-body  { fill: rgba(242, 239, 233, 0.06); stroke: #f2efe9; stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.vc-glass { fill: rgba(255, 43, 43, 0.18); stroke: #ff2b2b; stroke-width: 1.6; stroke-linejoin: round; }
+.vc-frame { fill: none; stroke: #f2efe9; stroke-width: 2.6; stroke-linejoin: round; stroke-linecap: round; }
+.vc-tire  { fill: #0b0d1a; stroke: #f2efe9; stroke-width: 2.4; }
+.vc-hub   { fill: none; stroke: #ff2b2b; stroke-width: 2; stroke-linecap: round; }
+.vc-wheel { transform-box: fill-box; transform-origin: center; }
+.vc-car-g { transition: transform 0.45s ease; }
+.vc-card:hover .vc-car-g { transform: translateX(6px); }
+.vc-card:hover .vc-wheel { animation: vc-spin 0.7s linear infinite; }
+.vc-road {
+  fill: none;
+  stroke: rgba(242, 239, 233, 0.35);
+  stroke-width: 2;
+  stroke-dasharray: 14 16;
+  animation: vc-road 1s linear infinite;
+}
+@keyframes vc-spin { to { transform: rotate(360deg); } }
+@keyframes vc-road { to { stroke-dashoffset: -30; } }
+
+/* Box around the vehicle picture (fills the picture area) */
+.vc-box {
+  width: 100%;
+  height: 100%;
+  min-height: 110px;
+  border-radius: 14px;
+  background: #0b0d1a;
+  border: 1px solid rgba(242, 239, 233, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  overflow: hidden;
+}
+.vc-box svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Photo inside the box */
+.vc-box.photo { padding: 0; }
+.vc-box.photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* change to cover to fill the box and crop the edges */
+  display: block;
+}
+
+/* Spec pills */
+.vc-specs {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.vc-spec {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  color: rgba(242, 239, 233, 0.85);
+  background: rgba(242, 239, 233, 0.07);
+  border: 1px solid rgba(242, 239, 233, 0.1);
+}
+
+/* Price + button */
+.vc-bottom {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.vc-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  transition: font-size 0.3s ease;
+}
+.vc-price small { font-size: 0.8rem; font-weight: 500; opacity: 0.6; }
+.vc-btn {
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  text-decoration: none;
+  background: #ff2b2b;
+  box-shadow: 0 6px 20px rgba(255, 43, 43, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, padding 0.3s ease, font-size 0.3s ease;
+}
+.vc-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(255, 43, 43, 0.6); }
+
+.vc-card a:focus-visible,
+.vh-chip:focus-visible,
+.vh-arrow:focus-visible { outline: 2px solid #ff2b2b; outline-offset: 2px; }
+
+/* ===== Hover: card doubles, lifts upward, neighbours move away ===== */
+@media (hover: hover) and (min-width: 701px) {
+  .vh-item:hover {
+    flex-basis: calc(var(--w) * 2);
+    margin: -120px calc(var(--grow) * -1) -30px; /* mostly grows upward, stays inside the screen */
+    z-index: 5;
+  }
+  .vh-item:has(~ .vh-item:hover) { transform: translateX(calc(var(--grow) * -1)); } /* cards before: move left */
+  .vh-item:hover ~ .vh-item      { transform: translateX(var(--grow)); }            /* cards after: move right */
+
+  .vh-item:hover .vc-name  { font-size: 1.6rem; }
+  .vh-item:hover .vc-price { font-size: 2rem; }
+  .vh-item:hover .vc-btn   { padding: 12px 24px; font-size: 0.95rem; }
+}
+
+/* ===== Small screens and reduced motion ===== */
+@media (max-width: 700px) {
+  .vh-page { padding-right: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vh-item, .vc-road, .vc-card:hover .vc-wheel { animation: none; }
+  .vh-item, .vc-card, .vc-car-g { transition: none; }
+}
+
+/* Bike video (frame sequence) */
+.vc-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0b0d1a;
+  border: 1px solid rgba(242, 239, 233, 0.1);
+}
+.vc-video canvas { width: 100%; height: 100%; display: block; }
+.vc-video-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 0;
+  background: #ff2b2b;
+  transition: opacity 0.4s ease;
+}
+.vc-video-bar.done { opacity: 0; }
+
+.vc-price small { color: rgba(242, 239, 233, 0.7); opacity: 1; }
+
+.vc-art:has(.vc-photo) { min-height: 170px; }
+.vc-photo {
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0b0d1a;
+  border: 1px solid rgba(242, 239, 233, 0.1);
+}
+.vc-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* use "contain" to show the whole photo without cropping */
+  object-position: center;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.vc-card:hover .vc-photo img { transform: scale(1.06); }
+@media (prefers-reduced-motion: reduce) {
+  .vc-card:hover .vc-photo img { transform: none; }
+}
+.vh-page {
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-bottom: 50px;
+}
+.vh-track {
+  padding-left: 250px;
+  padding-right: 250px;
+  scroll-padding-inline: 100px;
+}
+.vh-item:first-child { transform-origin: left center; }
+.vh-item:last-child  { transform-origin: right center; }
+
+/* Cursor-controlled turntable */
+.vd-spin { position: relative; width: 100%; height: 100%; cursor: ew-resize; touch-action: pan-y; }
+.vd-spin canvas { width: 100%; height: 100%; display: block; }
+.vd-spin-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(242, 239, 233, 0.85);
+  background: rgba(11, 13, 26, 0.65);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.vd-spin-hint.gone { opacity: 0; } 

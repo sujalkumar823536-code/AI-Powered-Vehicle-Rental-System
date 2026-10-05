@@ -1,0 +1,131 @@
+/* All classes are prefixed with cb- so they can't clash with your own styles. */
+.cb-root {
+  --cb-bg: #0e0f12;
+  --cb-fg: #f2efe9;
+  --cb-accent: #ff2b2b;
+
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--cb-bg);
+  pointer-events: none; /* clicks pass through to your page content */
+}
+
+.cb-canvas { width: 100%; height: 100%; display: block; }
+
+/* Soft dark gradient on the left so your text stays readable. Delete if not needed. */
+.cb-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(14, 15, 18, 0.6) 0%, rgba(14, 15, 18, 0) 55%);
+}
+
+.cb-flash {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at var(--fx, 70%) var(--fy, 50%), rgba(255, 43, 43, 0.55), transparent 60%);
+}
+
+/* Loader: a small bar in the corner, so your page stays usable while frames load */
+.cb-loader {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  color: var(--cb-fg);
+  transition: opacity 0.6s ease;
+}
+.cb-loader.done { opacity: 0; }
+.cb-bar { width: 160px; height: 3px; background: #2a2c33; overflow: hidden; }
+.cb-bar span { display: block; height: 100%; width: 0; background: var(--cb-accent); }
+.cb-pct { font-size: 0.85rem; opacity: 0.7; }
+
+/* Captions (optional) */
+.cb-caption {
+  position: absolute;
+  left: 6vw;
+  bottom: 12vh;
+  max-width: 34ch;
+  color: var(--cb-fg);
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  line-height: 1.15;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
+}
+.cb-caption.show { opacity: 1; transform: none; }
+
+/* Half-circle control */
+.cb-gauge {
+  --gauge-height: min(78vh, 560px);  /* size */
+  --bar-opacity: 0.45;               /* 1 = solid, 0 = invisible */
+  --gauge-x: 62vw;                   /* left edge; use ~14vw for the left side */
+
+  position: absolute;
+  top: 50%;
+  left: var(--gauge-x);
+  transform: translateY(-50%);
+  height: var(--gauge-height);
+  aspect-ratio: 260 / 400;
+  z-index: 4;
+  user-select: none;
+  transition: opacity 0.5s ease;
+}
+.cb-gauge.hidden { opacity: 0; }
+
+.cb-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  opacity: var(--bar-opacity);
+  touch-action: none;
+}
+
+.cb-track { fill: none; stroke: transparent; stroke-width: 6; stroke-linecap: round; }
+.cb-fill  { fill: none; stroke: var(--cb-accent); stroke-width: 6; stroke-linecap: round; }
+.cb-glow  { fill: none; stroke: var(--cb-accent); stroke-width: 16; stroke-linecap: round; filter: blur(8px); opacity: 0; }
+
+.cb-knob {
+  fill: rgba(242, 239, 233, 0.35);
+  stroke: var(--cb-accent);
+  stroke-width: 4;
+  cursor: grab;
+  pointer-events: auto; /* the handle itself can be touched */
+  transition: r 0.2s ease;
+}
+.cb-knob:focus-visible { outline: none; stroke-width: 7; }
+.cb-gauge.drag .cb-knob { cursor: grabbing; r: 18px; }
+.cb-gauge.busy .cb-knob { cursor: default; pointer-events: none; }
+
+.cb-startDot { fill: none; stroke: var(--cb-accent); stroke-width: 3; }
+.cb-pulse {
+  fill: none;
+  stroke: var(--cb-accent);
+  stroke-width: 3;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cb-pulse 1.8s ease-out infinite;
+}
+.cb-gauge:not(.idle) .cb-pulse { animation: none; opacity: 0; }
+
+@keyframes cb-pulse {
+  0%   { transform: scale(1);   opacity: 0.9; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cb-pulse { animation: none; opacity: 0.5; }
+}
+
+/* Phones: move the control toward the middle and make it smaller */
+@media (max-width: 700px) {
+  .cb-gauge { --gauge-x: 55vw; --gauge-height: min(60vh, 420px); }
+  .cb-scrim { background: linear-gradient(0deg, rgba(14, 15, 18, 0.6) 0%, rgba(14, 15, 18, 0) 60%); }
+}
