@@ -17,9 +17,13 @@ export function photoFor(name = "") {
 
 /* Bikes that have a turntable frame folder in /public */
 const SPINS = {
-  meteor: { folder: "/meteor-jpg", frameCount: 100 },
+  meteor: { folder: "/meteor-jpg", frameCount: 300 },
   classic: { folder: "/classic-jpg", frameCount: 300 },
   swift: { folder: "/swift-jpg", frameCount: 300 },
+  thar: { folder: "/thar-jpg", frameCount: 300 },
+  creta: { folder: "/Creta-jpg", frameCount: 300 },
+  innova: { folder: "/Innova-jpg", frameCount: 300 },
+  nexon: { folder: "/nexon-jpg", frameCount: 300 },
   // add prefix: "...", ext: "png" here if your file names differ
 };
 
