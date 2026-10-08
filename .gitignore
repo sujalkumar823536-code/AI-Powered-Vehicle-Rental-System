@@ -3,4 +3,9 @@ __pycache__/
 *.pyc
 .env
 .env.*
+!.env.example
 .vscode/
+
+node_modules/
+dist/
+chroma_db/

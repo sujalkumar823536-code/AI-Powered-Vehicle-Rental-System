@@ -12,5 +12,4 @@ langchain>=0.3
 langchain-chroma
 chromadb
 langchain-anthropic
-# langchain-openai          (if LLM_PROVIDER=openai)
-# langchain-google-genai    (if LLM_PROVIDER=google_genai)
+langchain-google-genai   
